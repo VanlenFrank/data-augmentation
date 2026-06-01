@@ -2,7 +2,7 @@
 
 import numpy as np
 
-__all__ = ["salt_pepper_noise"]
+__all__ = ["salt_pepper_noise", "gaussian_noise"]
 
 
 def salt_pepper_noise(
@@ -60,5 +60,37 @@ def salt_pepper_noise(
             r_idx = coords // cols
             c_idx = coords % cols
             output[r_idx, c_idx, :] = pepper_val
+
+    return output
+
+
+def gaussian_noise(
+    img: np.ndarray,
+    mean: float = 0.0,
+    sigma: float = 25.0,
+) -> np.ndarray:
+    """添加高斯噪声.
+
+    向图像添加服从 N(mean, sigma^2) 分布的高斯噪声.
+
+    Args:
+        img:   输入图像, uint8, ndarray.
+        mean:  噪声均值,  默认 0.0.
+        sigma: 噪声标准差, 默认 25.0 (值越大噪声越强).
+
+    Returns:
+        添加噪声后的图像, ndarray, dtype=uint8, 值域已裁剪到 [0, 255].
+
+    Raises:
+        ValueError: img 为空或 sigma < 0.
+    """
+    if img.size == 0:
+        raise ValueError("输入图像为空.")
+    if sigma < 0:
+        raise ValueError(f"sigma 不能为负, 当前: {sigma}")
+
+    noise = np.random.normal(mean, sigma, img.shape).astype(np.float32)
+    output = img.astype(np.float32) + noise
+    output = np.clip(output, 0, 255).astype(np.uint8)
 
     return output
