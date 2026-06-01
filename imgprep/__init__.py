@@ -6,16 +6,19 @@
   - 亮度增强 (enhance)
   - 椒盐噪声/高斯噪声 (noise)
   - 运动模糊 (blur)
+
+安装:
+    pip install git+https://github.com/VanlenFrank/data-augmentation.git
 """
 
 from .io import imread, imwrite
 from .convert import (
-    to_grayscale,
-    to_bgr,
-    to_rgb,
-    to_hsv,
-    to_lab,
-    convert_color,
+    to_grayscale as to_grayscale,
+    to_bgr as to_bgr,
+    to_rgb as to_rgb,
+    to_hsv as to_hsv,
+    to_lab as to_lab,
+    convert_color as convert_color,
 )
 from .enhance import adjust_brightness
 from .noise import salt_pepper_noise, gaussian_noise
