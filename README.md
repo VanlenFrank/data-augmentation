@@ -22,6 +22,7 @@ pip install -e .
 | `imgprep.convert` | `convert_color(img, src, dst)` | 通用色彩空间转换 |
 | `imgprep.enhance` | `adjust_brightness(img, alpha, beta)` | 亮度 / 对比度调整 |
 | `imgprep.noise` | `salt_pepper_noise(img, salt_prob, pepper_prob)` | 添加椒盐噪声 |
+| `imgprep.noise` | `gaussian_noise(img, mean, sigma)` | 添加高斯噪声 |
 | `imgprep.blur` | `motion_blur(img, kernel_size, angle)` | 运动模糊 |
 
 ## 快速使用
@@ -32,6 +33,7 @@ from imgprep import imread, imwrite
 from imgprep import to_grayscale, to_hsv
 from imgprep import adjust_brightness
 from imgprep import salt_pepper_noise
+from imgprep import gaussian_noise
 from imgprep import motion_blur
 
 # 读图
@@ -46,6 +48,9 @@ brighter = adjust_brightness(img, alpha=1.2, beta=30)
 
 # 椒盐噪声
 noisy = salt_pepper_noise(img, salt_prob=0.02, pepper_prob=0.02)
+
+# 高斯噪声
+noisy_g = gaussian_noise(img, mean=0, sigma=25)
 
 # 运动模糊 (45° 方向)
 blurred = motion_blur(img, kernel_size=21, angle=45)

@@ -8,7 +8,7 @@ from imgprep.convert import (
     to_grayscale, to_rgb, to_bgr, to_hsv, to_lab, convert_color,
 )
 from imgprep.enhance import adjust_brightness
-from imgprep.noise import salt_pepper_noise
+from imgprep.noise import salt_pepper_noise, gaussian_noise
 from imgprep.blur import motion_blur
 
 
@@ -130,6 +130,33 @@ class TestNoise:
             salt_pepper_noise(fake_bgr, 1.5, 0.1)
         with pytest.raises(ValueError):
             salt_pepper_noise(fake_bgr, 0.1, -0.1)
+
+    def test_gaussian_noise_shape(self, fake_bgr):
+        noisy = gaussian_noise(fake_bgr, mean=0, sigma=25)
+        assert noisy.shape == fake_bgr.shape
+        assert noisy.dtype == np.uint8
+
+    def test_gaussian_noise_gray(self, fake_gray):
+        noisy = gaussian_noise(fake_gray, sigma=10)
+        assert noisy.shape == fake_gray.shape
+
+    def test_gaussian_noise_zero_sigma(self, fake_bgr):
+        """sigma=0 应返回原图."""
+        noisy = gaussian_noise(fake_bgr, sigma=0)
+        assert np.array_equal(noisy, fake_bgr)
+
+    def test_gaussian_noise_negative_sigma(self, fake_bgr):
+        with pytest.raises(ValueError, match="sigma"):
+            gaussian_noise(fake_bgr, sigma=-1)
+
+    def test_gaussian_noise_empty(self):
+        with pytest.raises(ValueError, match="为空"):
+            gaussian_noise(np.array([], dtype=np.uint8).reshape(0, 0, 3))
+
+    def test_gaussian_noise_actually_adds_noise(self, fake_bgr):
+        """sigma > 0 时输出应与原图不同."""
+        noisy = gaussian_noise(fake_bgr, sigma=30)
+        assert not np.array_equal(noisy, fake_bgr)
 
 
 # ============ blur ============
